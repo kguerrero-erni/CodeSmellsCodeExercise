@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace CodeSmellCleanWithOrderItem
+namespace CodeSmell
 {
     internal class Program
     {
