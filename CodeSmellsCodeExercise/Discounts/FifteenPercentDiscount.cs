@@ -4,7 +4,7 @@ class FifteenPercentDiscount : IDiscountRule
 {
     public bool isMatch(double totalPrice)
     {
-        return totalPrice > 1000;
+        return totalPrice > 2000;
     }
     public double apply(double totalPrice)
     {
