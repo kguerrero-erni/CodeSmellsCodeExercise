@@ -4,13 +4,15 @@
     {
         static void Main(string[] args)
         {
+			//variable product prices isn't being used - DeadCode
 			OrderProcessor orderProcessor = new OrderProcessor();
 			orderProcessor.ProcessOrder("Jane Doe", "California", new List<string> { "Laptop", "Phone" }, new List<double> { 1200, 800 }, new List<int> { 1, 2 });
-			orderProcessor.ProcessOrder("John Doe", "New York", new List<string> { "Tablet", "Monitor", "Keyboard" }, new List<double> { 300, 200, 50 }, new List<int> { 1, 1, 1 });
+			orderProcessor.ProcessOrder("John Doe", "New York", new List<string> { "Tablet", "Monitor", "Keyboard" }, new List<double> { 5002, 200, 50 }, new List<int> { 1, 1, 1 });
 
 			Console.ReadLine();
 		}
-
+	
+	//LargeClass - Separate each class
 		class OrderProcessor
 		{
 			private Dictionary<string, double> prices = new Dictionary<string, double>();
@@ -23,7 +25,9 @@
 				prices["Monitor"] = 200;
 				prices["Keyboard"] = 50;
 			}
-
+			//Data clumps
+			//Lack of error handling
+			//long methods
 			public void ProcessOrder(string customerName, string customerAddress, List<string> productNames, List<double> productPrices, List<int> quantities)
 			{
 				if (string.IsNullOrEmpty(customerName) || string.IsNullOrEmpty(customerAddress))
@@ -57,6 +61,7 @@
 
 				try
 				{
+					//tight coupling
 					Database.SaveOrder(customerName, customerAddress, productNames, quantities, totalPrice);
 				}
 				catch (Exception ex)
@@ -67,6 +72,7 @@
 
 			class Database
 			{
+				//Data clumps
 				public static void SaveOrder(string customerName, string customerAddress, List<string> products, List<int> quantities, double total)
 				{
 					if (string.IsNullOrEmpty(customerName) || total <= 0)
