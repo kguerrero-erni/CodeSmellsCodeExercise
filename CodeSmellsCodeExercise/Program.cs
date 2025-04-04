@@ -2,15 +2,18 @@
 {
     internal class Program
     {
-        static void Main(string[] args)
+        static void oldMain()
         {
 			OrderProcessor orderProcessor = new OrderProcessor();
+			// DATA CLUMPS: long list of parameters
+			// DUPLICATE CODE: product name and price has already been defined in OrderProcessor
 			orderProcessor.ProcessOrder("Jane Doe", "California", new List<string> { "Laptop", "Phone" }, new List<double> { 1200, 800 }, new List<int> { 1, 2 });
 			orderProcessor.ProcessOrder("John Doe", "New York", new List<string> { "Tablet", "Monitor", "Keyboard" }, new List<double> { 300, 200, 50 }, new List<int> { 1, 1, 1 });
 
 			Console.ReadLine();
 		}
-
+		// LONG CLASS
+		// FEATURE ENVY(?) : handles multiple responsibilities like applying discounts and handling orders
 		class OrderProcessor
 		{
 			private Dictionary<string, double> prices = new Dictionary<string, double>();
@@ -24,6 +27,7 @@
 				prices["Keyboard"] = 50;
 			}
 
+			//DATA CLUMP: long list of parameters
 			public void ProcessOrder(string customerName, string customerAddress, List<string> productNames, List<double> productPrices, List<int> quantities)
 			{
 				if (string.IsNullOrEmpty(customerName) || string.IsNullOrEmpty(customerAddress))
@@ -44,6 +48,7 @@
 					totalPrice += itemPrice;
 				}
 
+				// CONDITIONAL COMPLEXITY(?)
 				if (totalPrice > 2000)
 				{
 					totalPrice *= 0.85; // Apply 15% discount
@@ -55,6 +60,7 @@
 
 				Console.WriteLine($"Order for {customerName} at {customerAddress} processed. Total: {totalPrice}");
 
+				// LACK OF ERROR HANDLING(?): can be improved, more specific exceptions.
 				try
 				{
 					Database.SaveOrder(customerName, customerAddress, productNames, quantities, totalPrice);
