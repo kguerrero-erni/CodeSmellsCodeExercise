@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace CodeSmellCleanWithOrderItem
+namespace CodeSmellsRefactored
 {
     internal class Program
     {
@@ -31,36 +31,18 @@ namespace CodeSmellCleanWithOrderItem
         }
     }
 
-    class OrderItem
+    //Immutable data structure using 'record'
+    public record OrderItem(string ProductName, int Quantity);
+
+    //Immutable Order, with validation
+    public record Order(string CustomerName, string Address, IReadOnlyList<OrderItem> Items)
     {
-        public string ProductName { get; }
-        public int Quantity { get; }
-
-        public OrderItem(string productName, int quantity)
-        {
-            ProductName = productName;
-            Quantity = quantity;
-        }
-    }
-
-    class Order
-    {
-        public string CustomerName { get; }
-        public string Address { get; }
-        public List<OrderItem> Items { get; }
-
-        public Order(string customerName, string address, List<OrderItem> items)
-        {
-            CustomerName = customerName;
-            Address = address;
-            Items = items;
-        }
-
         public bool IsValid() =>
             !string.IsNullOrWhiteSpace(CustomerName) &&
             !string.IsNullOrWhiteSpace(Address) &&
-            Items != null && Items.Count > 0;
+            Items is { Count: > 0 };
     }
+
 
     class OrderProcessor
     {
