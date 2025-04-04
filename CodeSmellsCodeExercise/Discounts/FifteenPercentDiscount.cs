@@ -1,4 +1,4 @@
-namespace CodeSmells;
+namespace CodeSmellsCodeExercise;
 
 class FifteenPercentDiscount : IDiscountRule
 {

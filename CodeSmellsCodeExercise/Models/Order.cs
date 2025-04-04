@@ -1,4 +1,4 @@
-namespace CodeSmells;
+namespace CodeSmellsCodeExercise;
 
 class Order {
     public Customer customer {get;}

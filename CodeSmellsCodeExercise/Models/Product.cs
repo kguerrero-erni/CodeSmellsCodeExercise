@@ -1,4 +1,4 @@
-namespace CodeSmells;
+namespace CodeSmellsCodeExercise;
 
 class Product {
     public string productNames {get;}

@@ -1,4 +1,4 @@
-namespace CodeSmells;
+namespace CodeSmellsCodeExercise;
 class OrderProcessor : IOrderProcess
 {
     private readonly IDiscount _discount;

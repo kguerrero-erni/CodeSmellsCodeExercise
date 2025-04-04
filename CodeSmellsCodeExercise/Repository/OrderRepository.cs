@@ -1,4 +1,4 @@
-namespace CodeSmells;
+namespace CodeSmellsCodeExercise;
 
 class OrderRepository : IOrderRepository {
     public void SaveOrder(Order order)

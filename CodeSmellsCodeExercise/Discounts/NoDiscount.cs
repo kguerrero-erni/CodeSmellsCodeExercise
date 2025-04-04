@@ -1,5 +1,5 @@
-namespace CodeSmells
-{
+namespace CodeSmellsCodeExercise;
+
     public class NoDiscount : IDiscountRule
     {
         public bool isMatch(double totalPrice)
@@ -12,4 +12,3 @@ namespace CodeSmells
             return totalPrice;
         }
     }
-}
