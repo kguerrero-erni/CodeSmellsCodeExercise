@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Xml.Linq;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace CodeSmellsCodeExercise
 {
@@ -9,31 +10,34 @@ namespace CodeSmellsCodeExercise
         {
             Customer customer = new Customer();
             Validation validate = new Validation();
-            OrderInventory inventory = new OrderInventory();
+            Database database = new Database();
             OrderProcessor orderProcessor = new OrderProcessor();
             DiscountPrice discountPrice = new DiscountPrice();
+            DisplayInfo displayInfo = new DisplayInfo();
+
             try
             {
                 customer.GetCustomerDetails("John Doe", "California");
-                validate.ValidateCustomerDetails(customer.customerName,customer.customerAddress);
+                validate.ValidateCustomerDetails(customer.customerName, customer.customerAddress);
+                
                 orderProcessor.AddOrder("Laptop", 1);
-                orderProcessor.AddOrder("Towel", 2);
+                orderProcessor.AddOrder("Towel", 1);
+                
                 double price = orderProcessor.ProcessOrder();
+                
                 validate.ValidateOrder(price);
-                price = discountPrice.GetDiscount(price);
-
-                Console.WriteLine($"Order for {customer.customerName} at {customer.customerAddress} processed. Total: {price}");
-
-                inventory.SaveOrder(customer, orderProcessor);
-                orderProcessor.ClearOders();
-
+                
+                discountPrice.GetDiscount(price);
+                
+                displayInfo.display(customer, price);
+                
+                database.SaveOrder(customer, orderProcessor);
+                
                 Console.ReadLine();
-
-
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine("Error saving order: "+ ex.Message);
             }
         }
 
@@ -78,6 +82,8 @@ namespace CodeSmellsCodeExercise
                     if (!productPrices.ContainsKey(productNames[i]))
                     {
                         Console.WriteLine($"Unknown product: {productNames[i]}");
+                        //throw new ArgumentException($"Unknow product {productNames[i]}");
+
                         continue;
                     }
 
@@ -87,7 +93,7 @@ namespace CodeSmellsCodeExercise
                 return totalPrice;
             }
 
-            public void ClearOders()
+            public void ClearOrders()
             {
                 productNames.Clear();
                 quantities.Clear();
@@ -99,11 +105,11 @@ namespace CodeSmellsCodeExercise
             public double GetDiscount(double price)
             {
                 discountedPrice = price;
-                if ( discountedPrice > 1000)
+                if (discountedPrice > 1000)
                 {
                     return discountedPrice *= 0.85;
                 }
-                else if ( discountedPrice > 2000)
+                else if (discountedPrice > 2000)
                 {
                     return discountedPrice *= 0.90;
                 }
@@ -128,21 +134,24 @@ namespace CodeSmellsCodeExercise
                 }
             }
         }
-        class OrderInventory
-        { 
+        class Database
+        {
             public void SaveOrder(Customer customer, OrderProcessor orders)
             {
 
                 Console.WriteLine("Order saved to database.\n");
-                Console.WriteLine($"Order saved to database for customer: {customer.customerName}, {customer.customerAddress}");
-                Console.WriteLine("Order details:");
-                for (int i = 0; i < orders.productNames.Count; i++)
-                {
-                    Console.WriteLine($"Product: {orders.productNames[i]}, Quantity: {orders.quantities[i]}");
-                }
-                Console.WriteLine();
+                orders.ClearOrders();
             }
         }
+        class DisplayInfo
+        {
+            public void display(Customer customer, double price)
+            {
+                Console.WriteLine($"Order for {customer.customerName} at {customer.customerAddress} processed. Total: {price}");
+            }
 
+        }
     }
 }
+
+
