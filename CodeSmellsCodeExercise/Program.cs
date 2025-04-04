@@ -2,22 +2,26 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography.X509Certificates;
-
+using CodeSmellsCodeExercise.Entities;
 namespace CodeSmellsCodeExercise
 {
     internal class Program
     {
       static void Main(string[] args)
       {
+        User janeCal = new User("Jane Doe", "California");
+        Quantity janeQ = new Quantity(new List<int> { 1, 3 });
+        var janeProd = new List<OrderItem> { OrderItem.Laptop, OrderItem.Phone };
+        OrderProcessor orderProcessor = new OrderProcessor(janeCal, janeProd, janeQ );
+			  orderProcessor.ProcessOrder();
 
-        OrderProcessor orderProcessor = new OrderProcessor("Jane Doe", "California", new List<OrderItem> { OrderItem.Laptop, OrderItem.Phone }, new List<int> { 1, 3 });
-			  orderProcessor.ProcessOrder();
-        orderProcessor = new OrderProcessor("John Doe", "New York", new List<OrderItem> { OrderItem.Tablet, OrderItem.Monitor, OrderItem.Keyboard }, new List<int> { 1, 1, 1 });
-			  orderProcessor.ProcessOrder();
-        orderProcessor = new OrderProcessor("Sam Smith", "New York", new List<OrderItem> { OrderItem.Tablet, OrderItem.Monitor, OrderItem.Laptop }, new List<int> { 2, 1, 3 });
+        User johnNY = new User("John Doe", "New York");
+        Quantity johnQ = new Quantity(new List<int> { 1, 1, 1 });
+        var johnProd = new List<OrderItem> { OrderItem.Tablet, OrderItem.Monitor, OrderItem.Keyboard };
+        orderProcessor = new OrderProcessor(johnNY, johnProd, johnQ);
         orderProcessor.ProcessOrder();
-        orderProcessor = new OrderProcessor("Ben&Ben", "Manila", new List<OrderItem> { OrderItem.Tablet, OrderItem.Monitor}, new List<int> { 2, 1, 3 });
-        orderProcessor.ProcessOrder();
+
+
       }
 
     
@@ -31,13 +35,13 @@ namespace CodeSmellsCodeExercise
 
     
 
-      public OrderProcessor(string customerName, string customerAddress, List<OrderItem> productNames, List<int> quantities)
+      public OrderProcessor(User customer, List<OrderItem> productNames, Quantity quantities)//string customerName, string customerAddress,
       {
         
-        this.customerName = customerName;
-        this.customerAddress = customerAddress;
+        this.customerName = customer.Name;
+        this.customerAddress = customer.Address;
         this.productNames = productNames;
-        this.quantities = quantities;
+        this.quantities = quantities.Quant;
       }
       void SetTotalPrice(double totalPrice)
       {
