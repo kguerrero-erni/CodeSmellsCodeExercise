@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 namespace CodeSmell
 {
     internal class Program
@@ -83,10 +80,15 @@ namespace CodeSmell
             {
                 SaveOrder(order, total);
             }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine("Validation error: " + ex.Message);
+            }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error saving order: {ex.Message}");
+                Console.WriteLine("Unexpected error while saving order: " + ex.Message);
             }
+
         }
 
         private double CalculateTotal(Order order)
