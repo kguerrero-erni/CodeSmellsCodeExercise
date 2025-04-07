@@ -10,22 +10,29 @@ public class OrderProcessor(IDatabase database)
 
     public void ProcessOrder(ICustomer customer, List<IProduct>? orders)
     {
-        if (string.IsNullOrEmpty(customer.FullName) || string.IsNullOrEmpty(customer.Address))
-            throw new ArgumentNullException("Invalid customer details");
+        try
+        {
+            if (string.IsNullOrEmpty(customer.FullName) || string.IsNullOrEmpty(customer.Address))
+                throw new ArgumentNullException("Invalid customer details");
 
-        if (orders?.Count == 0)
-            throw new ArgumentNullException("Order is empty, Cannot proceed.");
+            if (orders?.Count == 0)
+                throw new ArgumentNullException("Order is empty, Cannot proceed.");
 
-        foreach (var order in orders!)
-            totalPrice += order.Price;
+            foreach (var order in orders!)
+                totalPrice += order.Price;
 
-        double discount = ApplyDiscount(totalPrice);
+            double discount = ApplyDiscount(totalPrice);
 
-        var discountMessage = discount > 0 ? $"({discount}% discount applied)" : "(No discount applied)";
+            var discountMessage = discount > 0 ? $"({discount}% discount applied)" : "(No discount applied)";
 
-        Console.WriteLine($"Order for {customer.FullName} at {customer.Address} processed. Total: {totalPrice} {discountMessage}");
+            _database.SaveOrder(customer, orders, totalPrice);
 
-        _database.SaveOrder(customer, orders, totalPrice);
+            Console.WriteLine($"Order for {customer.FullName} at {customer.Address} processed. Total: {totalPrice} {discountMessage}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error processing your order: {ex.Message}");
+        }
     }
 
     public double ApplyDiscount(double price)

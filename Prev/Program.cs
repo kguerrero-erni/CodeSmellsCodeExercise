@@ -18,6 +18,7 @@ namespace CodeSmellsCodeExercise
 		{
 			private Dictionary<string, double> prices = new Dictionary<string, double>();
 
+			// Prices are redundant, It is already present from arguments in method
 			public OrderProcessor()
 			{
 				prices["Laptop"] = 1200;
@@ -27,7 +28,7 @@ namespace CodeSmellsCodeExercise
 				prices["Keyboard"] = 50;
 			}
 
-			// Method is too long
+			// Method is too long and arguments are complex
 			public void ProcessOrder(string customerName, string customerAddress, List<string> productNames, List<double> productPrices, List<int> quantities)
 			{
 				if (string.IsNullOrEmpty(customerName) || string.IsNullOrEmpty(customerAddress))
