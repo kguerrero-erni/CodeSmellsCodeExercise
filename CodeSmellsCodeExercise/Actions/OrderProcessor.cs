@@ -13,28 +13,34 @@ public class OrderProcessor(IDatabase database)
         if (string.IsNullOrEmpty(customer.FullName) || string.IsNullOrEmpty(customer.Address))
             throw new ArgumentNullException("Invalid customer details");
 
-        if (orders?.Count() == 0)
+        if (orders?.Count == 0)
             throw new ArgumentNullException("Order is empty, Cannot proceed.");
 
         foreach (var order in orders!)
             totalPrice += order.Price;
 
-        ApplyDiscount(totalPrice);
+        double discount = ApplyDiscount(totalPrice);
 
-        Console.WriteLine($"Order for {customer.FullName} at {customer.Address} processed. Total: {totalPrice}");
+        var discountMessage = discount > 0 ? $"({discount}% discount applied)" : "(No discount applied)";
+
+        Console.WriteLine($"Order for {customer.FullName} at {customer.Address} processed. Total: {totalPrice} {discountMessage}");
 
         _database.SaveOrder(customer, orders, totalPrice);
     }
 
-    public void ApplyDiscount(double price)
+    public double ApplyDiscount(double price)
     {
         if (price > 2000)
         {
             totalPrice *= 0.85; // Apply 15% discount
+            return 15;
         }
         else if (price > 1000)
         {
             totalPrice *= 0.90; // Apply 10% discount
+            return 10;
         }
+
+        return 0;
     }
 }

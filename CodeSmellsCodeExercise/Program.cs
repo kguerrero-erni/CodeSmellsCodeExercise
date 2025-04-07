@@ -14,11 +14,17 @@ internal class Program
 
 		Laptop laptop = new();
 		Phone phone = new();
+		Tablet tablet = new();
+		MonitorScreen monitor = new();
+		Keyboard keyboard = new();
 
 		laptop.SetQuantity(2);
 
 		orderStore.AddProduct(laptop);
 		orderStore.AddProduct(phone);
+		orderStore.AddProduct(tablet);
+		orderStore.AddProduct(monitor);
+		orderStore.AddProduct(keyboard);
 
 		var customerInfo = customer1.GetCustomerInformation();
 		var orders = orderStore.GetOrders();
