@@ -4,17 +4,17 @@ namespace CodeSmellsCodeExercise.Entities;
 
 public class Product
 {
-    public List<string> ProductNames {get; set;}
+    public string ProductNames {get; set;}
 
-    public List<int> Quantities {get ; set;}
+    public int Quantities {get ; set;}
 
-    public Product(){
-      ProductNames = new List<string>();
-        Quantities = new List<int>();
+    public Product(string productNames, int quantities){
+      ProductNames = productNames;
+        Quantities = quantities;
     }
 
-    public void AddItem(string productName, int quantity){
-        ProductNames.Add(productName);
-        Quantities.Add(quantity);
-    }
+    // public void AddItem(string productName, int quantity){
+    //     ProductNames.Add(productName);
+    //     Quantities.Add(quantity);
+    // }
 }

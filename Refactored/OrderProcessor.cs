@@ -19,20 +19,22 @@ public class OrderProcessor : ICalculateOrder
 			}
 
 		
-            public double calculateOrder(Product product){
-                double totalPrice = 0;
-				for (int i = 0; i < product.ProductNames.Count; i++)
-				{
-					if (!prices.ContainsKey(product.ProductNames[i]))
-					{
-						Console.WriteLine($"Unknown product: {product.ProductNames[i]}");
-						continue;
-					}
-					double itemPrice = prices[product.ProductNames[i]] * product.Quantities[i];
-					totalPrice += itemPrice;
-				}
-                return totalPrice;
+            public double calculateOrder(AddProduct product)
+        {
+            double totalPrice = 0;
+            foreach (var item in product.GetItems())
+            {
+                if (!prices.ContainsKey(item.ProductNames))
+                {
+                    Console.WriteLine($"Unknown product: {item.ProductNames}");
+                    continue;
+                }
+                double itemPrice = prices[item.ProductNames] * item.Quantities;
+                totalPrice += itemPrice;
             }
+            return totalPrice;
+        }
+    
 
         
 

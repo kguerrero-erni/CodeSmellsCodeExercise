@@ -19,7 +19,7 @@ public class ProcessingOrder
 		_calculateOrder = calculateOrder;
 		_database = database;
     }
-	public void ProcessOrder(CustomerDetails customer,Product product)
+	public void ProcessOrder(CustomerDetails customer,AddProduct product)
 			{
 				if (string.IsNullOrEmpty(customer.CustomerName) || string.IsNullOrEmpty(customer.CustomerAddress))
 				{

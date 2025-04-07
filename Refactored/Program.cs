@@ -16,8 +16,10 @@ namespace CodeSmellsCodeExercise
 			ProcessingOrder orderProcessor = new ProcessingOrder(discount, calculateOrder,database);
 
 			CustomerDetails customer1 = new CustomerDetails("Jane Doe", "California");
-			Product product1 = new Product();
-			  product1.AddItem("Laptop", 1);
+			AddProduct product1 = new AddProduct();
+			product1.AddItem("Laptop",1);
+			product1.AddItem("Phone",1);
+	
 
 
 			// CustomerDetails customer3 = new CustomerDetails("John Doe", "New York");

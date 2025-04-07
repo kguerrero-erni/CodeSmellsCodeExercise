@@ -5,5 +5,5 @@ using CodeSmellsCodeExercise.Entities;
 
 public interface ICalculateOrder
 {
-     double calculateOrder(Product product);
+     double calculateOrder(AddProduct product);
 }
