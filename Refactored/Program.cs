@@ -17,11 +17,9 @@ namespace CodeSmellsCodeExercise
 
 			CustomerDetails customer1 = new CustomerDetails("Jane Doe", "California");
 			AddProduct product1 = new AddProduct();
-			product1.AddItem("Laptop",1);
-			product1.AddItem("Phone",1);
+			product1.AddItem("Laptop",2);
+			product1.AddItem("Keyboard",2);
 	
-
-
 			// CustomerDetails customer3 = new CustomerDetails("John Doe", "New York");
 			// Product product3 = new Product(new List<string> { "Tablet" }, new List<int> { 4 });
 			

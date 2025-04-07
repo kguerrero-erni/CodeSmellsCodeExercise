@@ -10,15 +10,12 @@ public class AddProduct
     public AddProduct(){
           _productItems = new List<Product>();
     }
+    public void AddItem(string productName, int quantity){
+        var newProductItem = new Product(productName, quantity);
+        _productItems.Add(newProductItem);
+    }
 
-        public void AddItem(string productName, int quantity)
-        {
-            var newProductItem = new Product(productName, quantity);
-            _productItems.Add(newProductItem);
-        }
-
-          public List<Product> GetItems()
-        {
-            return _productItems;
-        }
+    public List<Product> GetItems(){
+        return _productItems;
+    }
 }

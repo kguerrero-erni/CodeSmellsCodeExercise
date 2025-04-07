@@ -12,7 +12,7 @@
 			Console.ReadLine();
 		}
 	
-	//LargeClass - Separate each class
+	
 		class OrderProcessor
 		{
 			private Dictionary<string, double> prices = new Dictionary<string, double>();
@@ -54,7 +54,7 @@
 				}
 				else if (totalPrice > 1000)
 				{
-					totalPrice *= 0.90; // Apply 10% discount
+					totalPrice *= 0.90; // Apply 10% discouxnt
 				}
 
 				Console.WriteLine($"Order for {customerName} at {customerAddress} processed. Total: {totalPrice}");

@@ -13,8 +13,5 @@ public class Product
         Quantities = quantities;
     }
 
-    // public void AddItem(string productName, int quantity){
-    //     ProductNames.Add(productName);
-    //     Quantities.Add(quantity);
-    // }
+
 }

@@ -34,9 +34,4 @@ public class OrderProcessor : ICalculateOrder
             }
             return totalPrice;
         }
-    
-
-        
-
-
 		}
