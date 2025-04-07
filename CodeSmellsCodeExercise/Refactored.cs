@@ -1,20 +1,39 @@
-﻿using System.Diagnostics;
-using System.Security.Cryptography.X509Certificates;
-
-namespace CodeSmellsCodeExercise
+﻿namespace CodeSmellsCodeExercise
 {
     internal class Refactored
     {
         static void Main(string[] args)
         {
-            Customer customer = new Customer("John Doe", "New York");
-            ProductList products = new ProductList();
-            ProductManager productManager = new ProductManager();
-            products.AddToCart("Laptop", 1);
-            products.AddToCart("Monitor", 2);
-            products.AddToCart("Keyboard", 1);
-            OrderProcessor orderProcessor = new OrderProcessor(customer,products,productManager);
-            orderProcessor.ProcessOrder(customer, products);
+            try
+            {
+                Customer customer = new Customer("John Doe", "New York");
+                ItemList itemList = new ItemList();
+                Cart products = new Cart(itemList);
+
+                products.AddToCart("Laptop", 1);
+                products.AddToCart("Monitor", 2);
+                products.AddToCart("Keyboard", 1);
+                products.RemoveItemFromCart("Monitor", 1);
+
+                OrderProcessor orderProcessor = new OrderProcessor(customer,products, itemList);
+                orderProcessor.ProcessOrder(customer, products);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            catch (ArgumentNullException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            catch (InvalidOperationException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
 
         class Customer
@@ -23,51 +42,82 @@ namespace CodeSmellsCodeExercise
             public string Address { get; }
             public Customer(string name, string address)
             {
-                if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(address))
+                if (string.IsNullOrWhiteSpace(name))
                 {
-                    throw new ArgumentException("Invalid customer information.");
+                    throw new ArgumentNullException(nameof(name), "Customer name cannot be empty.");
                 }
+                if (string.IsNullOrWhiteSpace(address))
+                {
+                    throw new ArgumentNullException(nameof(address), "Customer address cannot be empty.");
+                }
+
                 Name = name;
                 Address = address;
             }
         }
-        class ProductList
+        class Cart
         {
             private Dictionary<string, int> cart = new Dictionary<string, int>();
+            private readonly ItemList _itemList;
+            public Cart(ItemList itemList)
+            {
+                _itemList = itemList;
+            }
 
             public Dictionary<string,int> GetCart()
             {
                 return cart;
             }
 
+            public int GetQuantity(string name)
+            {
+                return cart[name];
+            }
+
             public void AddToCart(string name, int quantity)
             {
-                if (CheckIfExist(name))
+                if (_itemList.IsInPriceList(name))
                 {
-                    cart.Add(name, cart[name] + quantity);
+
+                    if (IsInCart(name))
+                    {
+                        cart.Add(name, cart[name] + quantity);
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Added `Product Name: {name} , Quantity: {quantity}` to cart.");
+                        cart[name] = quantity;
+                    }
                 }
                 else
                 {
-                    cart[name] = quantity;
+                    throw new KeyNotFoundException("Item does not exist in price list.");
                 }
+
             }
             
             public void RemoveItemFromCart(string name, int quantity)
             {
-                if (CheckIfExist(name))
-                {
-                    cart.Remove(name);
-                }
-                else { throw new ArgumentException("Unable to remove item. Item does not exist."); }
-            }
-
-            public bool CheckIfExist(string name)
-            {
                 if (!cart.ContainsKey(name))
                 {
-                    return false;
+                    throw new KeyNotFoundException("Item does not exist in the cart.");
                 }
-                return true;
+
+                if (cart[name] <= quantity) 
+                {
+                    Console.WriteLine($"Removed `Product Name: {name}` from cart.");
+                    cart.Remove(name);
+                }
+                else
+                {
+                    cart[name] -= quantity;
+                    Console.WriteLine($"Removed `Product Name: {name}, Quantity: {quantity}` from cart.");
+                }
+            }
+
+            public bool IsInCart(string name)
+            {
+                return cart.ContainsKey(name);
             }
 
             public void Clear() 
@@ -78,11 +128,11 @@ namespace CodeSmellsCodeExercise
                 }
                 else
                 {
-                    throw new ArgumentException("Cart is empty.");
+                    throw new InvalidOperationException("Cart is empty.");
                 }
             }
         }
-        class ProductManager
+        class ItemList
         {
             private Dictionary<string, double> prices = new Dictionary<string, double>
             {
@@ -92,6 +142,11 @@ namespace CodeSmellsCodeExercise
                 { "Monitor", 200},
                 { "Keyboard", 50 }
             };
+            
+            public bool IsInPriceList(string name)
+            {
+                return prices.ContainsKey(name);
+            }
             public double GetPrice(string productName)
             {
                 return prices[productName];
@@ -103,7 +158,7 @@ namespace CodeSmellsCodeExercise
 
                 public Product(string name, double price)
                 {
-                    if (string.IsNullOrWhiteSpace(name)) { throw new ArgumentException("Product name cannot be empty."); }
+                    if (string.IsNullOrWhiteSpace(name)) { throw new ArgumentNullException("Product name cannot be empty."); }
                     if (price < 0) { throw new ArgumentException("Price cannot be negative."); }
                     Name = name;
                     Price = price;
@@ -116,23 +171,31 @@ namespace CodeSmellsCodeExercise
         class OrderProcessor
         {
             private readonly Customer _customer;
-            private readonly ProductList _cart;
-            private readonly ProductManager _productManager;
+            private readonly Cart _cart;
+            private readonly ItemList _itemList;
 
-            public OrderProcessor(Customer customer, ProductList cart, ProductManager productManager)
+            public OrderProcessor(Customer customer, Cart cart, ItemList itemList)
             {
                 _customer = customer;
                 _cart = cart;
-                _productManager = productManager;
+                _itemList = itemList;
             }
 
-            public void ProcessOrder(Customer customer, ProductList cart)
+            public void ProcessOrder(Customer customer, Cart cart)
             {
                 
                 double totalPrice = CalculateTotal();
                 totalPrice = ApplyDiscount(totalPrice);
 
-                PrintReceipt($"Order for {customer.Name} from {customer.Address} processed. Total: {totalPrice}");
+                PrintReceipt($"Order for {customer.Name} from {customer.Address} processed. Total: {totalPrice}.");
+
+                PrintReceipt($"Cart:");
+
+                foreach(var item in cart.GetCart().Keys)
+                {
+                    PrintReceipt("\t" + item + ": " + cart.GetQuantity(item));
+                }
+
                 Database.SaveOrder(customer, cart, totalPrice);
             }
             public void PrintReceipt(string message)
@@ -146,7 +209,7 @@ namespace CodeSmellsCodeExercise
 
                 foreach (var product in cart.Keys)
                 {
-                    totalPrice += _productManager.GetPrice(product) * cart[product];
+                    totalPrice += _itemList.GetPrice(product) * cart[product];
                     
                 }
                 return totalPrice;
@@ -169,7 +232,7 @@ namespace CodeSmellsCodeExercise
         }
         class Database
         {
-           public static void SaveOrder(Customer customer, ProductList cart, double total)
+           public static void SaveOrder(Customer customer, Cart cart, double total)
            {
                 Console.WriteLine("Order saved to database.");
            }
