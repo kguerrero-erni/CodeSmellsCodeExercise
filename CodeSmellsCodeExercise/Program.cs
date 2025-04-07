@@ -1,30 +1,32 @@
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography.X509Certificates;
 using CodeSmellsCodeExercise.Entities;
+using CodeSmellsCodeExercise.Interfaces;
+
 namespace CodeSmellsCodeExercise
 {
-    internal class Program
+  internal class Program
+  {
+    static void Main(string[] args)
     {
-      static void Main(string[] args)
-      {
-        User janeCal = new User("Jane Doe", "California");
-        Quantity janeQ = new Quantity(new List<int> { 1, 3 });
-        var janeProd = new List<OrderItem> { OrderItem.Laptop, OrderItem.Phone };
-        OrderProcessor orderProcessor = new OrderProcessor(janeCal, janeProd, janeQ );
-			  orderProcessor.ProcessOrder();
+      IPriceCalculator priceCalculator = new PriceCalculator();
+      IInputHandler inputHandler = new InputHandler();
+      IOutputHandler outputHandler = new OutputHandler();
+      IDatabase database = new Database();
 
-        User johnNY = new User("John Doe", "New York");
-        Quantity johnQ = new Quantity(new List<int> { 1, 1, 1 });
-        var johnProd = new List<OrderItem> { OrderItem.Tablet, OrderItem.Monitor, OrderItem.Keyboard };
-        orderProcessor = new OrderProcessor(johnNY, johnProd, johnQ);
-        orderProcessor.ProcessOrder();
+      User janeCal = new User("Jane Doe", "California");
+      Quantity janeQ = new Quantity(new List<int> { 1, 3 });
+      var janeProd = new List<OrderItem> { OrderItem.Laptop, OrderItem.Phone };
 
+      var janeProcessor = new OrderProcessor(janeCal, janeProd, janeQ, priceCalculator, inputHandler, outputHandler, database);
+      janeProcessor.ProcessOrder();
 
-      }
+      User johnNY = new User("John Doe", "New York");
+      Quantity johnQ = new Quantity(new List<int> { 1, 1, 1 });
+      var johnProd = new List<OrderItem> { OrderItem.Tablet, OrderItem.Monitor, OrderItem.Keyboard };
 
-    
+      var johnProcessor = new OrderProcessor(johnNY, johnProd, johnQ, priceCalculator, inputHandler, outputHandler, database);
+      johnProcessor.ProcessOrder();
+    }
+
     class OrderProcessor
     {
       private double totalPrice;
@@ -33,94 +35,48 @@ namespace CodeSmellsCodeExercise
       private List<OrderItem> productNames;
       private List<int> quantities;
 
-    
+      private readonly IPriceCalculator priceCalculator;
+      private readonly IInputHandler inputHandler;
+      private readonly IOutputHandler outputHandler;
+      private readonly IDatabase database;
 
-      public OrderProcessor(User customer, List<OrderItem> productNames, Quantity quantities)//string customerName, string customerAddress,
+      public OrderProcessor(User customer, List<OrderItem> productNames, Quantity quantities,
+                            IPriceCalculator priceCalculator,
+                            IInputHandler inputHandler,
+                            IOutputHandler outputHandler,
+                            IDatabase database)
       {
-        
         this.customerName = customer.Name;
         this.customerAddress = customer.Address;
         this.productNames = productNames;
         this.quantities = quantities.Quant;
-      }
-      void SetTotalPrice(double totalPrice)
-      {
-        this.totalPrice = totalPrice;
-      }
 
+        this.priceCalculator = priceCalculator;
+        this.inputHandler = inputHandler;
+        this.outputHandler = outputHandler;
+        this.database = database;
+      }
+      Boolean NameAddressIsNullOrEmpty()
+      {
+        if (string.IsNullOrEmpty(customerName) || string.IsNullOrEmpty(customerAddress))
+        {
+          Console.WriteLine("Invalid customer details.");
+          return false;
+        }
+        return true;
+
+      }
 
       public void ProcessOrder()
       {
-        NameAddressIsNullOrEmpty();
-
-        CalculateTotalPrice();
-    
-        OutputHandler();
-
-
-        void NameAddressIsNullOrEmpty()
+        if (!NameAddressIsNullOrEmpty())
         {
-          if (string.IsNullOrEmpty(customerName) || string.IsNullOrEmpty(customerAddress))
-          {
-            Console.WriteLine("Invalid customer details.");
-            return;
-          }
-
+          return;
         }
 
-        void CalculateTotalPrice()
-        {
-          double totalPrice = 0;
-          for (int i = 0; i < productNames.Count; i++)
-          {
-            double itemPrice = (int)productNames[i] * quantities[i];
-            totalPrice += itemPrice;
-           }
-
-          var discountProcessor = new DiscountProcessor(totalPrice);
-          totalPrice = discountProcessor.CheckDisc();
-          SetTotalPrice(totalPrice);
-
-          
-
-        }
-
-        void OutputHandler()
-        {
-          Console.WriteLine($"Order for {customerName} at {customerAddress} processed. Total: {totalPrice}");
-
-          try
-          {
-            SaveOrder();
-          }
-          catch (Exception ex)
-          {
-            Console.WriteLine("Error saving order: " + ex.Message);
-          }
-
-        }
-
-        void SaveOrder()
-        {
-    
-          if (string.IsNullOrEmpty(customerName) || totalPrice <= 0)
-          {
-            throw new ArgumentException("Invalid order details.");
-          }
-          Console.WriteLine("Order saved to database.");
-        }
-
-        
-
-
+        totalPrice = priceCalculator.CalculateTotalPrice(productNames, quantities);
+        outputHandler.HandleOutput(customerName, customerAddress, totalPrice, database);
+      }
     }
-   
-
-    }
-  
-    
-    
-
-
-    }
+  }
 }

@@ -22,7 +22,7 @@ namespace CodeSmellsCodeExercise.CodeSmellsComments
 
       class OrderProcessor
       {
-        // Tight Coupling
+        
         private Dictionary<string, double> prices = new Dictionary<string, double>();
 
         public OrderProcessor()
@@ -33,7 +33,7 @@ namespace CodeSmellsCodeExercise.CodeSmellsComments
           prices["Monitor"] = 200;
           prices["Keyboard"] = 50;
         }
-        // Long Methods
+        // Long Method
         public void ProcessOrder(string customerName, string customerAddress, List<string> productNames, List<double> productPrices, List<int> quantities)
         {
           // Specify Conditional
@@ -84,7 +84,7 @@ namespace CodeSmellsCodeExercise.CodeSmellsComments
 
         class Database
         {
-          // Data Clumps, just do within the class
+          // Data Clumps
           public static void SaveOrder(string customerName, string customerAddress, List<string> products, List<int> quantities, double total)
           {
             // Specify Conditional
