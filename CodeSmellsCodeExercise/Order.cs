@@ -13,12 +13,11 @@ namespace CodeSmellsCodeExercise
         private List<Product> products = new List<Product>();
         public double totalPrice { get; set; }
 
-        public Order(Customer customer, List<string> productNames, List<double> productPrices, List<int> productQuantity)
+        public Order(Customer customer, List<Product> products)
         {
             this.customer = customer;
 
-            for (int i = 0; i < productNames.Count; i++)
-                products.Add(new Product(productNames[i], productPrices[i], productQuantity[i]));
+            this.products = products;
         }
 
         public bool IsValid()

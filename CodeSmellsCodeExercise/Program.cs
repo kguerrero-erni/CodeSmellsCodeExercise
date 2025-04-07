@@ -5,6 +5,8 @@
         static void Main(string[] args)
         {
 			OrderProcessor orderProcessor = new OrderProcessor();
+
+			// Data Clumps
 			orderProcessor.ProcessOrder("Jane Doe", "California", new List<string> { "Laptop", "Phone" }, new List<double> { 1200, 800 }, new List<int> { 1, 2 });
 			orderProcessor.ProcessOrder("John Doe", "New York", new List<string> { "Tablet", "Monitor", "Keyboard" }, new List<double> { 300, 200, 50 }, new List<int> { 1, 1, 1 });
 

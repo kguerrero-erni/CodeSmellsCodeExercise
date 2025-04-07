@@ -9,8 +9,21 @@
             Customer customer1 = new Customer("Jane Doe", "California");
             Customer customer2 = new Customer("John Doe", "New York");
 
-            Order order1 = new Order(customer1, new List<string> { "Laptop", "Phone" }, new List<double> { 1200, 800 }, new List<int> { 1, 2 });
-            Order order2 = new Order(customer2, new List<string> { "Tablet", "Monitor", "Keyboard" }, new List<double> { 300, 200, 50 }, new List<int> { 1, 1, 1 });
+            var order1Products = new List<Product>
+            {
+                new Product("Laptop", 1200, 1),
+                new Product("Phone", 800, 2)
+            };
+
+            var order2Products = new List<Product>
+            {
+                new Product("Tablet", 300, 1),
+                new Product("Monitor", 200, 1),
+                new Product("Keyboard", 50, 1)
+            };
+
+            Order order1 = new Order(customer1, order1Products);
+            Order order2 = new Order(customer2, order2Products);
 
             orderProcessor.ProcessOrder(order1);
             orderProcessor.ProcessOrder(order2);
@@ -43,14 +56,7 @@
 
                 order.DisplayDetails();
 
-                try
-                {
-                    _db.SaveOrder(order);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Error saving order: " + ex.Message);
-                }
+                _db.SaveOrder(order);
             }
         }
     }
