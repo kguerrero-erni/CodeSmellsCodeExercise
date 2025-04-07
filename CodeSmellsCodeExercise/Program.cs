@@ -5,15 +5,22 @@
         static void Main(string[] args)
         {
 			OrderProcessor orderProcessor = new OrderProcessor();
-			orderProcessor.ProcessOrder("Jane Doe", "California", new List<string> { "Laptop", "Phone" }, new List<double> { 1200, 800 }, new List<int> { 1, 2 });
-			orderProcessor.ProcessOrder("John Doe", "New York", new List<string> { "Tablet", "Monitor", "Keyboard" }, new List<double> { 300, 200, 50 }, new List<int> { 1, 1, 1 });
+
+
+			//############  Data Clumps ############ 
+			// orderProcessor.ProcessOrder("Jane Doe", "California", new List<string> { "Laptop", "Phone" }, new List<double> { 1200, 800 }, new List<int> { 1, 2 });
+			// orderProcessor.ProcessOrder("John Doe", "New York", new List<string> { "Tablet", "Monitor", "Keyboard" }, new List<double> { 300, 200, 50 }, new List<int> { 1, 1, 1 });
 
 			Console.ReadLine();
 		}
 
+
+		//This is a large class
 		class OrderProcessor
 		{
-			private Dictionary<string, double> prices = new Dictionary<string, double>();
+
+			//############ This is a mutable state ############ 
+			// private Dictionary<string, double> prices = new Dictionary<string, double>();
 
 			public OrderProcessor()
 			{
@@ -24,13 +31,15 @@
 				prices["Keyboard"] = 50;
 			}
 
-			public void ProcessOrder(string customerName, string customerAddress, List<string> productNames, List<double> productPrices, List<int> quantities)
-			{
-				if (string.IsNullOrEmpty(customerName) || string.IsNullOrEmpty(customerAddress))
-				{
-					Console.WriteLine("Invalid customer details.");
-					return;
-				}
+
+	//############ Many Parameters ############ 
+			// public void ProcessOrder(string customerName, string customerAddress, List<string> productNames, List<double> productPrices, List<int> quantities)
+			// {
+			// 	if (string.IsNullOrEmpty(customerName) || string.IsNullOrEmpty(customerAddress))
+			// 	{
+			// 		Console.WriteLine("Invalid customer details.");
+			// 		return;
+			// 	}
 
 				double totalPrice = 0;
 				for (int i = 0; i < productNames.Count; i++)
@@ -44,14 +53,15 @@
 					totalPrice += itemPrice;
 				}
 
-				if (totalPrice > 2000)
-				{
-					totalPrice *= 0.85; // Apply 15% discount
-				}
-				else if (totalPrice > 1000)
-				{
-					totalPrice *= 0.90; // Apply 10% discount
-				}
+				//############ It's Conditional Comlecxity ############ 
+				// if (totalPrice > 2000)
+				// {
+				// 	totalPrice *= 0.85; // Apply 15% discount
+				// }
+				// else if (totalPrice > 1000)
+				// {
+				// 	totalPrice *= 0.90; // Apply 10% discount
+				// }
 
 				Console.WriteLine($"Order for {customerName} at {customerAddress} processed. Total: {totalPrice}");
 
@@ -61,20 +71,24 @@
 				}
 				catch (Exception ex)
 				{
+
+					//############ Generic Exception ############
 					Console.WriteLine("Error saving order: " + ex.Message);
 				}
 			}
 
+
+			//############ This is not reusable, tight coupling ############	
 			class Database
 			{
-				public static void SaveOrder(string customerName, string customerAddress, List<string> products, List<int> quantities, double total)
-				{
-					if (string.IsNullOrEmpty(customerName) || total <= 0)
-					{
-						throw new ArgumentException("Invalid order details.");
-					}
-					Console.WriteLine("Order saved to database.");
-				}
+				// public static void SaveOrder(string customerName, string customerAddress, List<string> products, List<int> quantities, double total)
+				// {
+				// 	if (string.IsNullOrEmpty(customerName) || total <= 0)
+				// 	{
+				// 		throw new ArgumentException("Invalid order details.");
+				// 	}
+				// 	Console.WriteLine("Order saved to database.");
+				// }
 			}
 		}
     }
