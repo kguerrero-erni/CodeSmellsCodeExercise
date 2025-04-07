@@ -8,8 +8,13 @@ public class Product
 
     public List<int> Quantities {get ; set;}
 
-    public Product(List<string> productNames, List<int> quantities){
-        ProductNames = productNames;
-        Quantities = quantities;
+    public Product(){
+      ProductNames = new List<string>();
+        Quantities = new List<int>();
+    }
+
+    public void AddItem(string productName, int quantity){
+        ProductNames.Add(productName);
+        Quantities.Add(quantity);
     }
 }

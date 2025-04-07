@@ -10,11 +10,11 @@ public class Discount : IDiscount
 		
 				if (totalPrice > 2000)
 				{
-					totalPrice *= 0.85; // Apply 15% discount
+					totalPrice *= 0.85; 
 				}
 				else if (totalPrice > 1000)
 				{
-					totalPrice *= 0.90; // Apply 10% discount
+					totalPrice *= 0.90;
 				}
                 
                 return totalPrice;
